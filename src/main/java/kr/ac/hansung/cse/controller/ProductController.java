@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import kr.ac.hansung.cse.service.CategoryService;
+import kr.ac.hansung.cse.service.ProductService;
 
 import java.util.List;
 
@@ -34,23 +36,43 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/products")
+
 public class ProductController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
-
-
     // ─────────────────────────────────────────────────────────────────
     // GET /products - 상품 목록 조회
     // ─────────────────────────────────────────────────────────────────
 
     @GetMapping
-    public String listProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
+    public String listProducts(
+            @RequestParam(required = false) String keyword,      // GET ?keyword=노트북
+            @RequestParam(required = false) Long categoryId,     // GET ?categoryId=1
+            Model model) {
+
+        List<Product> products;
+
+        if (keyword != null && !keyword.isBlank()) {
+            products = productService.searchByName(keyword);
+        } else if (categoryId != null) {
+            products = productService.searchByCategory(categoryId);
+        } else {
+            products = productService.getAllProducts();
+        }
+
         model.addAttribute("products", products);
+        // 카테고리 드롭다운 목록
+        model.addAttribute("categories", categoryService.getAllCategories());
+        // 검색 조건 유지 (검색 후 폼에 값 남기기)
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+
         return "productList";
     }
 
