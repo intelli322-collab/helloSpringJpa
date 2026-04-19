@@ -1,32 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>카테고리 등록</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카테고리 등록 - Product Management</title>
+    <style>
+        body { font-family: 'Malgun Gothic', Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #333; }
+        h1 { border-bottom: 2px solid #4a90d9; padding-bottom: 10px; color: #2c3e50; }
+        .back-btn { display: inline-block; padding: 8px 16px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px; margin-bottom: 24px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 6px; color: #495057; }
+        input[type="text"] {
+            width: 100%; padding: 10px 12px; border: 1px solid #ced4da;
+            border-radius: 4px; font-size: 1em; box-sizing: border-box;
+            font-family: inherit;
+        }
+        input:focus {
+            outline: none; border-color: #4a90d9; box-shadow: 0 0 0 3px rgba(74,144,217,0.15);
+        }
+        .field-error { border-color: #e74c3c !important; }
+        .error-msg { color: #e74c3c; font-size: 0.85em; margin-top: 5px; display: block; }
+        .btn-submit { background: #4a90d9; color: white; border: none; padding: 12px 32px; font-size: 1em; border-radius: 4px; cursor: pointer; }
+        .btn-submit:hover { background: #357abd; }
+        .required { color: #e74c3c; }
+        .hint { font-size: 0.85em; color: #6c757d; margin-top: 4px; }
+    </style>
 </head>
 <body>
 
 <h1>카테고리 등록</h1>
 
-<form th:action="@{/categories/create}"
-      th:object="${categoryForm}"
-      method="post">
+<a class="back-btn" th:href="@{/categories}">← 목록으로 돌아가기</a>
 
-    <div>
-        <label for="name">카테고리 이름</label><br>
-        <!-- th:field가 name, id, value를 자동 설정 -->
-        <input type="text" th:field="*{name}" placeholder="카테고리 이름 입력"/>
-        <!-- th:field가 name, id, value를 자동 설정 -->
-        <span th:errors="*{name}" style="color: red;"></span>
+<form th:action="@{/categories/create}" th:object="${categoryForm}" method="post">
+
+    <div class="form-group">
+        <label for="name">
+            카테고리 이름 <span class="required">*</span>
+        </label>
+        <input type="text"
+               th:field="*{name}"
+               th:classappend="${#fields.hasErrors('name')} ? 'field-error'"
+               placeholder="카테고리 이름을 입력하세요" />
+        <span class="error-msg"
+              th:if="${#fields.hasErrors('name')}"
+              th:errors="*{name}">이름 오류 메시지</span>
+        <p class="hint">최대 50자 이내로 입력하세요.</p>
     </div>
 
-    <br>
-    <button type="submit">등록</button>
-    <a href="/categories">취소</a>
+    <div class="form-group">
+        <button type="submit" class="btn-submit">카테고리 등록</button>
+    </div>
+
 </form>
 
-<hr>
 </body>
+
 <footer>
     <p th:text="${'실습 수행 일시: ' +
     #temporals.format(#temporals.createNow(), 'yyyy년 MM월 dd일 HH:mm:ss')}">
