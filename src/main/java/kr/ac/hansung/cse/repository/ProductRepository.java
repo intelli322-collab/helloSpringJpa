@@ -131,4 +131,20 @@ public class ProductRepository {
             entityManager.remove(product);
         }
     }
+
+    public List<Product> findByNameContaining(String keyword) {
+        return entityManager.createQuery(
+                        "SELECT p FROM Product p WHERE p.name LIKE :keyword ORDER BY p.name",
+                        Product.class)
+                .setParameter("keyword", "%" + keyword + "%")
+                .getResultList();
+    }
+
+    public List<Product> findByCategoryId(Long categoryId) {
+        return entityManager.createQuery(
+                        "SELECT p FROM Product p WHERE p.category.id = :cid ORDER BY p.name",
+                        Product.class)
+                .setParameter("cid", categoryId)
+                .getResultList();
+    }
 }
