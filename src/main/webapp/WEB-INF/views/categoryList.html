@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 목록</title>
+</head>
+<body>
+
+<h1>카테고리 목록</h1>
+
+<!-- categoryList.html : 성공/오류 Flash 메시지 표시 -->
+<p th:if="${successMessage}" th:text="${successMessage}"></p>
+<p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+
+<a href="/categories/create">+ 카테고리 등록</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>카테고리 이름</th>
+        <th>삭제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- th:each로 목록 반복, 삭제는 POST 폼으로 처리 -->
+    <tr th:each="category : ${categories}">
+        <td th:text="${cat.id}"></td>
+        <td th:text="${cat.name}"></td>
+        <td>
+            <!-- th:action에서 경로 변수 (id=${cat.id}) 바인딩 방법 -->
+            <form th:action="@{/categories/{id}/delete(id=${category.id})}"
+                  method="post"
+                  onsubmit="return confirm('정말 삭제하시겠습니까?')">
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(categories)}">
+        <td colspan="3">등록된 카테고리가 없습니다.</td>
+    </tr>
+    </tbody>
+</table>
+
+<hr>
+
+</body>
+<footer>
+    <p th:text="${'실습 수행 일시: ' +
+    #temporals.format(#temporals.createNow(), 'yyyy년 MM월 dd일 HH:mm:ss')}">
+    </p>
+    <p>학번: 2291093 | 성명: 이재령</p>
+</footer>
+</html>
