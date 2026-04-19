@@ -36,7 +36,21 @@
 <body>
 
     <h1>상품 목록</h1>
-
+    <form th:action="@{/products}" method="get">
+        <input type="text" name="keyword"
+               th:value="${keyword}"
+               placeholder="상품명 검색"/>
+        <select name="categoryId">
+            <option value="">-- 전체 카테고리 --</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}"
+                    th:selected="${cat.id == categoryId}">
+            </option>
+        </select>
+        <button type="submit">검색</button>
+        <a href="/products">전체보기</a>
+    </form>
     <!--
         th:if="${successMessage}":
         Model에 successMessage 속성이 있을 때만 이 div를 렌더링합니다.
@@ -46,12 +60,8 @@
     <div class="alert-success" th:if="${successMessage}">
         <span th:text="${successMessage}">성공 메시지</span>
     </div>
-
+    <p th:if="${#lists.isEmpty(products)}">검색 결과가 없습니다.</p>
     <a class="btn" th:href="@{/products/create}">+ 새 상품 등록</a>
-
-    <div class="empty-msg" th:if="${#lists.isEmpty(products)}">
-        등록된 상품이 없습니다. 새 상품을 등록해 주세요.
-    </div>
 
     <table th:unless="${#lists.isEmpty(products)}">
         <thead>
@@ -121,4 +131,11 @@
     </table>
 
 </body>
+
+<footer>
+    <p th:text="${'실습 수행 일시: ' +
+    #temporals.format(#temporals.createNow(), 'yyyy년 MM월 dd일 HH:mm:ss')}">
+    </p>
+    <p>학번: 2291093 | 성명: 이재령</p>
+</footer>
 </html>
